@@ -1,5 +1,6 @@
-package org.example.springbootdeveloper;
+package org.example.springbootdeveloper.repository;
 
+import org.example.springbootdeveloper.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

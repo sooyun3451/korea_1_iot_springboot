@@ -1,4 +1,4 @@
-package org.example.springbootdeveloper;
+package org.example.springbootdeveloper.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
