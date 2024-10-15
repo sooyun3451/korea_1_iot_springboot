@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity // JPA Entity 임을 선언, DB 테이블과 매핑
-@Table(name = "students") // 해당 Entity 가 'students' 라는 이름의 테이블과 매핑됨을 명시
+@Table(name = "students") // 해당 Entity 가 'students' 라는 이름의 테이블과 매핑됨을 명시 +) 테이블명과 Entity 의 이름이 동일한 경우 (name= "") 작성 하지 않아도 된다.
 @Getter
 @Setter
 public class Student {

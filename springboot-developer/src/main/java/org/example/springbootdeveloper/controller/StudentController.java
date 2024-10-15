@@ -43,23 +43,23 @@ public class StudentController {
 
     // 3) 학생 등록(POST) - 새로운 학생 데이터 등록
     // HTTP POST 요청을 처리. "api/students" 경로와 매핑
-//    @PostMapping
-//    public StudentDto createStudent(@RequestBody StudentDto studentDto) {
-//        // @RequestBody: 클라이언트에서 전달된 JSON 데이터를 StudentDto 객체로 변환
-//        return studentService.createStudent(studentDto);
-//    }
-//
-//    // 4) 학생 정보 수정(PUT) - 특정 ID의 학생 정보를 수정
-//    @PutMapping("/{id}")
-//    public StudentDto updateStudent(@PathVariable Long id, @RequestBody StudentDto studentDto) {
-//        return studentService.updateStudent(id, studentDto);
-//    }
-//
-//    // 5) 학생 정보 삭제(DELETE) - 특정 ID의 학생 정보를 삭제
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-//        studentService.deleteStudnet(id);
-//        return ResponseEntity.noContent().build();
-//        // : HTTP 상태 코드의 204 No Content 를 반환 - 본문 없이 응답을 완료시킴
-//    }
+    @PostMapping
+    public StudentDto createStudent(@RequestBody StudentDto studentDto) {
+        // @RequestBody: 클라이언트에서 전달된 JSON 데이터를 StudentDto 객체로 변환
+        return studentService.createStudent(studentDto);
+    }
+
+    // 4) 학생 정보 수정(PUT) - 특정 ID의 학생 정보를 수정
+    @PutMapping("/{id}")
+    public StudentDto updateStudent(@PathVariable Long id, @RequestBody StudentDto studentDto) {
+        return studentService.updateStudent(id, studentDto);
+    }
+
+    // 5) 학생 정보 삭제(DELETE) - 특정 ID의 학생 정보를 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
+        return ResponseEntity.noContent().build();
+        // : HTTP 상태 코드의 204 No Content 를 반환 - 본문 없이 응답을 완료시킴
+    }
 }
