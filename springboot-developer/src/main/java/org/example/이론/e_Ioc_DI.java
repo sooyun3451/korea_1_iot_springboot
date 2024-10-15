@@ -64,7 +64,6 @@ public class e_Ioc_DI {
     public static void main(String[] args) {
         BookStore1 store1 = new BookStore1();
         store1.displayBook();
-
     }
 
     // 1. 제어의 역전
