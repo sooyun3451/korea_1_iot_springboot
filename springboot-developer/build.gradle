@@ -18,6 +18,7 @@ dependencies {
     // 프로젝트 개발에 필요한 기능인 의존성을 입력
     // : 스프링부트 웹 관련 기능 제공 | 테스트 기능을 제공
     implementation('org.springframework.boot:spring-boot-starter-web')
+    testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
     // 스프링 데이터 JPA
