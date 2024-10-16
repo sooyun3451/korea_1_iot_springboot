@@ -40,4 +40,18 @@ public class i_test {
     // AssertJ 를 사용하여 가독성 향상
     // cf) assertThat(a + b).isEqualTo(sum);
     // : a 와 b 를 더한 값이 sum 과 같아야 한다
+
+    // AssertJ의 메서드
+    // - isEqualTo(A): A 값과 같은지 검증
+    // - isNotEqualTo(A): A 값과 다른지 검증
+    // - contains(A): A 값을 포함하는지 검증
+    // - doseNotContains(A): A 값을 포함하지 않는지 검증
+    // - startsWith(A): 접두사가 A인지 검증
+    // - endsWith(A): 접미사가 A인지 검증
+    // - isEmpty(): 비어있는 값인지 검증
+    // - isNotEmpty(): 비어있지 않은 값인지 검증
+    // - isPositive(): 양수인지 검증
+    // - isNegative(): 음수인지 검증
+    // - isGreaterThan(1): 1보다 큰 값인지 검증
+    // - isLessThan(1): 1보다 작은 값인지 검증
 }
