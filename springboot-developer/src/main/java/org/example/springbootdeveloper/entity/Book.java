@@ -12,7 +12,6 @@ import lombok.*;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, length = 50)
     private Long id;
 
     @Column(nullable = false, length = 50)
@@ -21,7 +20,7 @@ public class Book {
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 500)
     private String content;
 
     @Enumerated(EnumType.STRING)

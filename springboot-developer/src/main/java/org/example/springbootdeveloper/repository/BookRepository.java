@@ -24,6 +24,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     // +) 카테고리를 지정하지 않을경우 - 모든 카테고리에서 작성자의 책 조회
     List<Book> findByWriter(String writer);
 
+
     // 인터페이스 메서드 기본구조
     // : 반환타입 메서드명 (매개변수);
 

@@ -96,8 +96,6 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
-
-
     // Entity >> ResponseDto 변환
     private BookResponseDto convertToResponseDto(Book book) {
         return new BookResponseDto(
