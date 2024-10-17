@@ -10,7 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, length = 50)
@@ -30,5 +29,4 @@ public class Book {
     // : enum 의 이름을 문자열로 저장
     @Column(nullable = false)
     private Category category;
-
 }
