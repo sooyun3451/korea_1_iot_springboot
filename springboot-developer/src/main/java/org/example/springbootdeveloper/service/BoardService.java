@@ -46,7 +46,7 @@ public class BoardService {
     public BoardDto getBoardById(Long id) {
         try {
             Board board = boardRepository.findById(id)
-                    .orElseThrow(() -> new Error("Student not found with id: " + id));
+                    .orElseThrow(() -> new Error("Board not found with id: " + id));
 
             BoardDto boardDto = new BoardDto(
                     board.getId(),
@@ -84,7 +84,6 @@ public class BoardService {
                     "Failed to create board",e
             );
         }
-
     }
 
     public BoardDto updateBoard(Long id, BoardDto boardDto) {
@@ -128,6 +127,5 @@ public class BoardService {
                     "Error occurred while deleting board",e
             );
         }
-
     }
 }

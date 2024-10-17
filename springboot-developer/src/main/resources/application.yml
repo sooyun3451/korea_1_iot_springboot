@@ -25,6 +25,8 @@
 server:
   port: 8080
 
+# Spring Boot 와 JPA 를 이용해 ORM 구현
+# 애플리케이션 설정에서 연결할 DB 명시
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/springboot_db

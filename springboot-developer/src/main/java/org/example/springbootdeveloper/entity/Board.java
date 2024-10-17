@@ -36,5 +36,4 @@ public class Board {
         this.content = content;
         this.category = category;
     }
-
 }
