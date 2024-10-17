@@ -5,6 +5,7 @@ import org.example.springbootdeveloper.dto.request.BookRequestDto;
 import org.example.springbootdeveloper.dto.request.BookRequestUpdateDto;
 import org.example.springbootdeveloper.dto.response.BookResponseDto;
 import org.example.springbootdeveloper.entity.Book;
+import org.example.springbootdeveloper.entity.Category;
 import org.example.springbootdeveloper.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,36 @@ public class BookService {
                 .orElseThrow(() -> new IllegalArgumentException("책을 찾을 수 없습니다: " + id));
 
         return convertToResponseDto(book);
+    }
+
+    // 3-1. 제목에 특정 단어가 포함된 게시글 조회
+    public List<BookResponseDto> getBooksByTitleContaining(String keyword) {
+        List<Book> books = bookRepository.findByTitleContaining(keyword);
+        return books.stream()
+                .map(this::convertToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    // 3-2. 카테고리별 책 조회
+    public List<BookResponseDto> getBooksByCategory(Category category) {
+        return bookRepository.findByCategory(category).stream()
+                .map(this::convertToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    // 3-3. 카테고리 & 작성자별 책 조회
+    public List<BookResponseDto> getBooksByCategoryAndWriter(Category category, String writer) {
+        List<Book> books;
+
+        if(category == null) {
+            books = bookRepository.findByWriter(writer);
+        } else {
+            books = bookRepository.findByCategoryAndWriter(category, writer);
+        }
+
+        return books.stream()
+                .map(this::convertToResponseDto)
+                .collect(Collectors.toList());
     }
 
     // 4. 특정 ID 수정(Update)

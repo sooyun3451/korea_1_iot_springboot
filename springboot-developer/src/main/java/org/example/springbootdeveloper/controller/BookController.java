@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.springbootdeveloper.dto.request.BookRequestDto;
 import org.example.springbootdeveloper.dto.request.BookRequestUpdateDto;
 import org.example.springbootdeveloper.dto.response.BookResponseDto;
+import org.example.springbootdeveloper.entity.Category;
 import org.example.springbootdeveloper.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,28 @@ public class BookController {
         BookResponseDto book = bookService.getBookById(id);
         return ResponseEntity.ok(book);
     }
+
+    // 제목에 특정 단어가 포함된 책 조회
+    @GetMapping("/search/title")
+    public ResponseEntity<List<BookResponseDto>> getBooksByTitleContaining(@RequestParam String keyword) {
+        List<BookResponseDto> books = bookService.getBooksByTitleContaining(keyword);
+        return ResponseEntity.ok(books);
+    }
+
+    // 카테고리별 책 조회
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<BookResponseDto>> getBooksByCategory(@PathVariable Category category) {
+        List<BookResponseDto> books = bookService.getBooksByCategory(category);
+        return ResponseEntity.ok(books);
+    }
+
+    // 카테고리와 작성자 별 책 조회
+    @GetMapping("/search/category-writer")
+    public ResponseEntity<List<BookResponseDto>> getBooksByCategoryAndWriter(@RequestParam(required = false) Category category, @RequestParam String writer) {
+        List<BookResponseDto> books = bookService.getBooksByCategoryAndWriter(category, writer);
+        return ResponseEntity.ok(books);
+    }
+
 
     // 특정 ID 책 수정
     @PutMapping("/{id}")
