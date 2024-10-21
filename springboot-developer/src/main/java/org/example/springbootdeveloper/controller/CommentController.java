@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
-@RequiredArgsConstructor
+
 public class CommentController {
 
     // 의존성 주입(DI)
@@ -20,7 +20,8 @@ public class CommentController {
 
     // * @RequiredArgsConstructor: 생성자 주입 방식 - 롬복 어노테이션(final 과 @Nonnull 필드에 대해 자동으로 생성자를 생성)
     // @Autowired: 필드 주입 방법 - 스프링이 필드 자체에 객체를 주입
-    private final CommentService commentService;
+    @Autowired
+    private CommentService commentService;
 
     // CRUD 기능 명시
     // 1. 댓글 생성

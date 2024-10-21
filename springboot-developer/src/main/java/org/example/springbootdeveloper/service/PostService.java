@@ -20,57 +20,77 @@ public class PostService {
 
     // 1. 게시물 생성
     public ResponseDto<PostResponseDto> createPost(PostRequestDto postRequestDto) {
-        Post post = Post.builder()
-                .title(postRequestDto.getTitle())
-                .content(postRequestDto.getContent())
-                .author(postRequestDto.getAuthor())
-                .build();
+        try {
+            Post post = Post.builder()
+                    .title(postRequestDto.getTitle())
+                    .content(postRequestDto.getContent())
+                    .author(postRequestDto.getAuthor())
+                    .build();
 
-        Post savePost = postRepository.save(post);
+            Post savePost = postRepository.save(post);
 
-        PostResponseDto postResponseDto = new PostResponseDto(
-                post.getId(),
-                post.getTitle(),
-                post.getContent(),
-                post.getAuthor(),
-                new ArrayList<>()
-        );
+            PostResponseDto postResponseDto = new PostResponseDto(
+                    post.getId(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getAuthor(),
+                    new ArrayList<>()
+            );
+            return ResponseDto.set(true, "success", postResponseDto);
+        } catch(Exception e) {
+            return ResponseDto.setFailed(e.getMessage());
+        }
 
-        return ResponseDto.set(true, "success", postResponseDto);
     }
 
     // 2. 모든 게시물 찾기
     public ResponseDto<List<PostResponseDto>> getAllPosts() {
-       return ResponseDto.set(true, "success", postRepository.findAll().stream()
-               .map(this::convertResponseDto)
-               .collect(Collectors.toList()));
+        try {
+            return ResponseDto.set(true, "success", postRepository.findAll().stream()
+                    .map(this::convertResponseDto)
+                    .collect(Collectors.toList()));
+        }catch (Exception e) {
+            return ResponseDto.setFailed(e.getMessage());
+        }
     }
 
     // 3. 특정 ID 게시물 찾기
     public ResponseDto<PostResponseDto> getPostById(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + postId));
+        try {
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + postId));
 
-        return ResponseDto.set(true, "success",convertResponseDto(post));
+            return ResponseDto.set(true, "success",convertResponseDto(post));
+        } catch (Exception e) {
+            return ResponseDto.setFailed(e.getMessage());
+        }
     }
 
     // 4. 특정 ID 게시물 수정
     public ResponseDto<PostResponseDto> updatePost(Long postId, PostRequestDto postRequestDto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + postId));
+        try {
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + postId));
 
-        post.setTitle(postRequestDto.getTitle());
-        post.setContent(postRequestDto.getContent());
-        post.setAuthor(postRequestDto.getAuthor());
+            post.setTitle(postRequestDto.getTitle());
+            post.setContent(postRequestDto.getContent());
+            post.setAuthor(postRequestDto.getAuthor());
 
-        Post updatePost = postRepository.save(post);
-        return ResponseDto.set(true, "success", convertResponseDto(post));
+            Post updatePost = postRepository.save(post);
+            return ResponseDto.set(true, "success", convertResponseDto(post));
+        } catch (Exception e) {
+            return ResponseDto.setFailed(e.getMessage());
+        }
     }
 
     // 5. 특정 ID 게시물 삭제
     public ResponseDto<Void> deletePost(Long postId) {
-        postRepository.deleteById(postId);
-        return null;
+        try {
+            postRepository.deleteById(postId);
+            return null;
+        } catch (Exception e) {
+            return ResponseDto.setFailed(e.getMessage());
+        }
     }
 
     public PostResponseDto convertResponseDto(Post post) {
