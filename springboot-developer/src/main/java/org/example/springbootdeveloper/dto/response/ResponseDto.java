@@ -10,7 +10,7 @@ import lombok.Data;
 // : 모든 필드 값을 매개변수로 받는 생성자로 자동 생성
 // - staticName="set"
 //      : set()이라는 이름의 정적 메서드를 제공
-@AllArgsConstructor(staticName="set")
+@AllArgsConstructor(staticName = "set")
 public class ResponseDto<D> {
     private boolean result;
     private String message;

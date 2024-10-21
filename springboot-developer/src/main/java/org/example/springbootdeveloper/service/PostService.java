@@ -30,17 +30,16 @@ public class PostService {
             Post savePost = postRepository.save(post);
 
             PostResponseDto postResponseDto = new PostResponseDto(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getAuthor(),
+                    savePost.getId(),
+                    savePost.getTitle(),
+                    savePost.getContent(),
+                    savePost.getAuthor(),
                     new ArrayList<>()
             );
             return ResponseDto.setSuccess("success", postResponseDto);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
-
     }
 
     // 2. 모든 게시물 찾기
@@ -49,7 +48,7 @@ public class PostService {
             return ResponseDto.setSuccess("success", postRepository.findAll().stream()
                     .map(this::convertResponseDto)
                     .collect(Collectors.toList()));
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
     }
@@ -59,8 +58,7 @@ public class PostService {
         try {
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + postId));
-
-            return ResponseDto.setSuccess("success",convertResponseDto(post));
+            return ResponseDto.setSuccess("success", convertResponseDto(post));
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
@@ -77,7 +75,8 @@ public class PostService {
             post.setAuthor(postRequestDto.getAuthor());
 
             Post updatePost = postRepository.save(post);
-            return ResponseDto.setSuccess( "success", convertResponseDto(post));
+
+            return ResponseDto.setSuccess("success", convertResponseDto(updatePost));
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
@@ -87,7 +86,7 @@ public class PostService {
     public ResponseDto<Void> deletePost(Long postId) {
         try {
             postRepository.deleteById(postId);
-            return null;
+            return ResponseDto.setSuccess("success", null);
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }

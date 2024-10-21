@@ -37,7 +37,7 @@ public class CommentService {
                     .build();
             Comment saveComment = commentRepository.save(comment);
 
-            return ResponseDto.setSuccess( "success", convertResponseDto(saveComment));
+            return ResponseDto.setSuccess("success", convertResponseDto(saveComment));
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
@@ -48,7 +48,7 @@ public class CommentService {
         try {
             List<Comment> comments = commentRepository.findByPostId(postId);
             return ResponseDto.setSuccess("success", comments.stream().map(this::convertResponseDto).collect(Collectors.toList()));
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
     }
@@ -62,9 +62,9 @@ public class CommentService {
             comment.setContent(newContent);
 
             Comment updateComment = commentRepository.save(comment);
-            return ResponseDto.setSuccess( "success", convertResponseDto(updateComment));
+            return ResponseDto.setSuccess("success", convertResponseDto(updateComment));
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
     }
@@ -73,8 +73,8 @@ public class CommentService {
     public ResponseDto<Void> deleteComment(Long commentId) {
         try {
             commentRepository.deleteById(commentId);
-            return null;
-        }catch (Exception e) {
+            return ResponseDto.setSuccess("Success", null);
+        } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
     }
