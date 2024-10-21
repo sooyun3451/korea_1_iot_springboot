@@ -72,8 +72,12 @@ public class CommentService {
     // 4. 특정 ID 댓글 삭제
     public ResponseDto<Void> deleteComment(Long commentId) {
         try {
-            commentRepository.deleteById(commentId);
+            Comment comment = commentRepository.findById(commentId)
+                            .orElseThrow(() -> new Error("comment not found with id" + commentId));
+            commentRepository.delete(comment);
+
             return ResponseDto.setSuccess("Success", null);
+
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }

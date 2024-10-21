@@ -85,7 +85,11 @@ public class PostService {
     // 5. 특정 ID 게시물 삭제
     public ResponseDto<Void> deletePost(Long postId) {
         try {
-            postRepository.deleteById(postId);
+
+            Post post = postRepository.findById(postId)
+                            .orElseThrow(() -> new Error("post not found with id" + postId));
+            postRepository.delete(post);
+
             return ResponseDto.setSuccess("success", null);
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
