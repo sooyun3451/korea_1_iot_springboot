@@ -29,13 +29,21 @@ public class PostService {
 
             Post savePost = postRepository.save(post);
 
-            PostResponseDto postResponseDto = new PostResponseDto(
-                    savePost.getId(),
-                    savePost.getTitle(),
-                    savePost.getContent(),
-                    savePost.getAuthor(),
-                    new ArrayList<>()
-            );
+//            PostResponseDto postResponseDto = new PostResponseDto(
+//                    savePost.getId(),
+//                    savePost.getTitle(),
+//                    savePost.getContent(),
+//                    savePost.getAuthor(),
+//                    new ArrayList<>()
+//            );
+
+            PostResponseDto postResponseDto = PostResponseDto.builder()
+                    .id(savePost.getId())
+                    .title(savePost.getTitle())
+                    .content(savePost.getContent())
+                    .author(savePost.getAuthor())
+                    .build();
+
             return ResponseDto.setSuccess("success", postResponseDto);
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());

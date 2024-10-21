@@ -1,6 +1,7 @@
 package org.example.springbootdeveloper.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.springbootdeveloper.entity.Comment;
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PostResponseDto {
     private Long id;
     private String title;
