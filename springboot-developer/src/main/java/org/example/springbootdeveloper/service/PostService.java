@@ -36,7 +36,7 @@ public class PostService {
                     post.getAuthor(),
                     new ArrayList<>()
             );
-            return ResponseDto.set(true, "success", postResponseDto);
+            return ResponseDto.setSuccess("success", postResponseDto);
         } catch(Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
@@ -46,7 +46,7 @@ public class PostService {
     // 2. 모든 게시물 찾기
     public ResponseDto<List<PostResponseDto>> getAllPosts() {
         try {
-            return ResponseDto.set(true, "success", postRepository.findAll().stream()
+            return ResponseDto.setSuccess("success", postRepository.findAll().stream()
                     .map(this::convertResponseDto)
                     .collect(Collectors.toList()));
         }catch (Exception e) {
@@ -60,7 +60,7 @@ public class PostService {
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + postId));
 
-            return ResponseDto.set(true, "success",convertResponseDto(post));
+            return ResponseDto.setSuccess("success",convertResponseDto(post));
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
@@ -77,7 +77,7 @@ public class PostService {
             post.setAuthor(postRequestDto.getAuthor());
 
             Post updatePost = postRepository.save(post);
-            return ResponseDto.set(true, "success", convertResponseDto(post));
+            return ResponseDto.setSuccess( "success", convertResponseDto(post));
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }
