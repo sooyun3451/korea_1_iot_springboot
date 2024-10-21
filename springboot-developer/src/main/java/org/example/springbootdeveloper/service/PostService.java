@@ -29,13 +29,13 @@ public class PostService {
 
             Post savePost = postRepository.save(post);
 
-//            PostResponseDto postResponseDto = new PostResponseDto(
-//                    savePost.getId(),
-//                    savePost.getTitle(),
-//                    savePost.getContent(),
-//                    savePost.getAuthor(),
-//                    new ArrayList<>()
-//            );
+                // PostResponseDto postResponseDto = new PostResponseDto(
+                // savePost.getId(),
+                // savePost.getTitle(),
+                // savePost.getContent(),
+                // savePost.getAuthor(),
+                // new ArrayList<>()
+                // );
 
             PostResponseDto postResponseDto = PostResponseDto.builder()
                     .id(savePost.getId())
@@ -72,7 +72,17 @@ public class PostService {
         }
     }
 
-    // 4. 특정 ID 게시물 수정
+    // 4. 특정 작성자 게시물 조히
+    public ResponseDto<List<PostResponseDto>> getPostsByAuthor(String author) {
+        try {
+            return ResponseDto.setSuccess("success", postRepository.findByAuthor(author).stream()
+                    .map(this::convertResponseDto).collect(Collectors.toList()));
+        } catch(Exception e) {
+            return ResponseDto.setFailed(e.getMessage());
+        }
+    }
+
+    // 5. 특정 ID 게시물 수정
     public ResponseDto<PostResponseDto> updatePost(Long postId, PostRequestDto postRequestDto) {
         try {
             Post post = postRepository.findById(postId)
@@ -90,7 +100,7 @@ public class PostService {
         }
     }
 
-    // 5. 특정 ID 게시물 삭제
+    // 6. 특정 ID 게시물 삭제
     public ResponseDto<Void> deletePost(Long postId) {
         try {
 
@@ -103,6 +113,8 @@ public class PostService {
             return ResponseDto.setFailed(e.getMessage());
         }
     }
+
+
 
     public PostResponseDto convertResponseDto(Post post) {
         List<CommentResponseDto> commentResponseDtos = post.getComments().stream()
@@ -122,4 +134,6 @@ public class PostService {
                 commentResponseDtos
         );
     }
+
+
 }

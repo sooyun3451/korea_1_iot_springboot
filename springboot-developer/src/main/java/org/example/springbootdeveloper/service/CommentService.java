@@ -75,9 +75,7 @@ public class CommentService {
             Comment comment = commentRepository.findById(commentId)
                             .orElseThrow(() -> new Error("comment not found with id" + commentId));
             commentRepository.delete(comment);
-
             return ResponseDto.setSuccess("Success", null);
-
         } catch (Exception e) {
             return ResponseDto.setFailed(e.getMessage());
         }

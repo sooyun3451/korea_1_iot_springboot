@@ -35,13 +35,19 @@ public class PostController {
         return postService.getPostById(postId);
     }
 
-    // 4. 게시글 수정
+    // 4. 특정 작성자 게시물 조회
+    @GetMapping("/author")
+    public ResponseDto<List<PostResponseDto>> getPostsByAuthor(@RequestParam String author) {
+        return postService.getPostsByAuthor(author);
+    }
+
+    // 5. 게시글 수정
     @PutMapping("/{postId}")
     public ResponseDto<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto) {
         return postService.updatePost(postId, postRequestDto);
     }
 
-    // 게시글 삭제
+    // 6. 게시글 삭제
     @DeleteMapping("/{postId}")
     public ResponseDto<Void> deletePost(@PathVariable Long postId) {
         return postService.deletePost(postId);
