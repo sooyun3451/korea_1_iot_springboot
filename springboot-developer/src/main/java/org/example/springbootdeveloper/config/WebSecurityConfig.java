@@ -23,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 // 웹 보안 구성(설정)
 @Configuration // 해당 클래스가 설정 클래스로 사용됨을 명시
@@ -39,17 +40,28 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring()
                 // H2 콘솔에 대한 접근 보안 검사를 무시하도록 설정
-                .requestMatchers(toH2Console())
+                // .requestMatchers(toH2Console())
                 // "/static/**" 경로의 정적 리소스를 보안 검사에서 제외
                 .requestMatchers(new AntPathRequestMatcher("/static/**"));
     }
 
     @Bean
+    // CORS 정책: Cross Origin Resource Sharing
+    // >> 브라우저에서 다른 도메인(서버)으로부터 리소스를 요청할 떄 발생하는 보안 정책
+    // >> REST API(를) 사용할때 다른 출처(도메인)에서 API(에) 접근할 수 있도록 허용하는 정책
     public CorsFilter corsFilter() {
+        // CorsFilter
+        // : 특정 출처에서 온 HTTP 요청을 허용하거나 거부할 수 있는 필터
+        // : CORS 관련 설정을 필터링 해주는 역할
+
+        // UrlBasedCorsConfigurationSource: CORS 정책을 URL 기반으로 관리하는 객체
+        // >> 특정 경로에 따라 CORS 정책을 달리 적용 가능
+        // >> source(를) 통해 정책을 사용할 경로 지정
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // CORS 솬련 세부 설정을 담는 클래스
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true); // 쿠키를 허용할지 여부
-        config.addAllowedOriginPattern("*"); // 모든 도메인 허용
+        config.setAllowCredentials(true); // 쿠키를 허용할지 여부 - 자격 증명을 포함한 요청 허용 여부
+        config.addAllowedOriginPattern("*"); // 모든 도메인(출처) 허용 - 어디서든지 요청 가능
         config.addAllowedHeader("*"); // 모든 헤더 허용
         config.addAllowedMethod("*"); // 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
         source.registerCorsConfiguration("/**", config); // 모든 경로에 대해 CORS 적용
@@ -60,22 +72,25 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                .csrf(AbstractHttpConfigurer::disable) // 비활성화
+                .cors(withDefaults()) // CORS 허용
                 .authorizeHttpRequests(auth -> auth // 인증, 인가 설정
                         .requestMatchers(
                                 // 특정 경로에 대한 엑세스 설정
                                 // .requestMatchers(): 특정 요청과 일치하는 url(에) 대한 엑세스
-                                new AntPathRequestMatcher("/login"),
-                                new AntPathRequestMatcher("/signup"),
+                                new AntPathRequestMatcher("/api/users/**"),
                                 new AntPathRequestMatcher("/user")
                         )
+
                         // .permitAll(): 누구나 접근이 가능하게 설정, /login, /signup, /user 요청이 오면 인증, 인가 없이도 접근 가능
                         .permitAll()
+
                         // .anyRequest(): 위에서 설정한 url 이외의 요청에 대해 설정
                         // .authenticated(): 별도의 인가는 필요하지 않지만 인증이 성공된 상태여야 접근 가능
                         .anyRequest().authenticated())
+
                 // cf) csrf(Cross-Site Request Forgery): 사이트 간 요청 위조의 줄임말
                 // cf) csrf 공격을 방지하기 위해 활성화하는 것을 권장
-                .csrf(AbstractHttpConfigurer::disable) // 비활성화
                 .build();
     }
 
@@ -86,14 +101,17 @@ public class WebSecurityConfig {
     // 인증 관리자 관련 설정
     public AuthenticationManager authenticationManager(
             HttpSecurity http,
+
             // : 비밀번호를 암호화하는 BCryptPasswordEncoder Bean(을) 주입
             BCryptPasswordEncoder bCryptPasswordEncoder, // 비 크립트 페스워드 인코더
+
            // 사용자 세부 정보를 제공하는 UserDetailsService Bean(을) 주입
             UserDetailsService userDetailsService,
             UserService userService
     ) throws Exception{
         // DaoAuthenticationProvider: DB(에서) 사용자 인증을 처리
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
         // .setUserDetailsService: 사용자 세부 정보를 가져오는 서비스 설정
         authProvider.setUserDetailsService(userDetailsService);
         // 비밀번호 암호화를 사용
