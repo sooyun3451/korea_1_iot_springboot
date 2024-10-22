@@ -1,6 +1,7 @@
 package org.example.springbootdeveloper.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.springbootdeveloper.filter.JwtAuthenticationFilter;
 import org.example.springbootdeveloper.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import org.springframework.web.cors.CorsConfiguration;
@@ -28,12 +30,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 // 웹 보안 구성(설정)
 @Configuration // 해당 클래스가 설정 클래스로 사용됨을 명시
 @EnableWebSecurity // Spring Security(의) 웹 보안을 활성화
-// @RequiredArgsConstructor // final 필드 | @NonNull 필드에 대해 생성자를 자동 생성
+@RequiredArgsConstructor // final 필드 | @NonNull 필드에 대해 생성자를 자동 생성
 public class WebSecurityConfig {
 
-    @Autowired
-    private @Lazy UserService userService;
-    // @Lazy: 사용할때만 활성화하기 위해서 늦춰두기
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     // 정적 리소스나 특정 URL(에) 대해 Spring Security(가) 보안 검사를 무시하도록 설정: 기능 비활성화
@@ -90,6 +90,7 @@ public class WebSecurityConfig {
                         // .anyRequest(): 위에서 설정한 url 이외의 요청에 대해 설정
                         // .authenticated(): 별도의 인가는 필요하지 않지만 인증이 성공된 상태여야 접근 가능
                         .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
