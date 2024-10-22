@@ -3,10 +3,8 @@ package org.example.springbootdeveloper.config;
 import lombok.RequiredArgsConstructor;
 import org.example.springbootdeveloper.filter.JwtAuthenticationFilter;
 import org.example.springbootdeveloper.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,8 +20,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
-import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 // 웹 보안 구성(설정)
@@ -103,18 +98,17 @@ public class WebSecurityConfig {
             HttpSecurity http,
 
             // : 비밀번호를 암호화하는 BCryptPasswordEncoder Bean(을) 주입
-            BCryptPasswordEncoder bCryptPasswordEncoder, // 비 크립트 페스워드 인코더
+            BCryptPasswordEncoder bCryptPasswordEncoder // 비 크립트 페스워드 인코더
 
            // 사용자 세부 정보를 제공하는 UserDetailsService Bean(을) 주입
-            UserDetailsService userDetailsService,
+           // UserDetailsService userDetailsService,
 
-            UserService userService
     ) throws Exception{
         // DaoAuthenticationProvider: DB(에서) 사용자 인증을 처리
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         // .setUserDetailsService: 사용자 세부 정보를 가져오는 서비스 설정
-        authProvider.setUserDetailsService(userDetailsService);
+        // authProvider.setUserDetailsService(userDetailsService);
 
         // 비밀번호 암호화를 사용
         authProvider.setPasswordEncoder(bCryptPasswordEncoder);
