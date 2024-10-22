@@ -50,7 +50,7 @@ public class UserController {
     // GET VS "POST"
     // : POST 사용을 권장
     // - 로그인 과정에서 사용자 이름과 비밀번호와 같은 민감한 데이터를 서버로 전송하기 때문
-    // - GET 요청은 URL(에) 데이터가 노출: 데이터 조회에 사용 
+    // - GET 요청은 URL(에) 데이터가 노출: 데이터 조회에 사용
     @PostMapping("/login")
     public ResponseDto<String> login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         try {

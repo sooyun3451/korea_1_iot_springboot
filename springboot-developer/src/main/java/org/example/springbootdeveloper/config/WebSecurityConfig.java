@@ -72,6 +72,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                // cf) csrf(Cross-Site Request Forgery): 사이트 간 요청 위조의 줄임말
+                // cf) csrf 공격을 방지하기 위해 활성화하는 것을 권장
                 .csrf(AbstractHttpConfigurer::disable) // 비활성화
                 .cors(withDefaults()) // CORS 허용
                 .authorizeHttpRequests(auth -> auth // 인증, 인가 설정
@@ -82,20 +84,17 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/user")
                         )
 
-                        // .permitAll(): 누구나 접근이 가능하게 설정, /login, /signup, /user 요청이 오면 인증, 인가 없이도 접근 가능
+                        // .permitAll(): 누구나 접근이 가능하게 설정, /api/users/**, /user 요청이 오면 인증, 인가 없이도 접근 가능
                         .permitAll()
 
                         // .anyRequest(): 위에서 설정한 url 이외의 요청에 대해 설정
                         // .authenticated(): 별도의 인가는 필요하지 않지만 인증이 성공된 상태여야 접근 가능
                         .anyRequest().authenticated())
-
-                // cf) csrf(Cross-Site Request Forgery): 사이트 간 요청 위조의 줄임말
-                // cf) csrf 공격을 방지하기 위해 활성화하는 것을 권장
                 .build();
     }
 
     // 인증 처리
-    // AuthenticationManager: Spring Security 에서 인증(Authentication)을 담당하는 핵심 인터페잇
+    // AuthenticationManager: Spring Security 에서 인증(Authentication)을 담당하는 핵심 인터페이스
     // >> 인증 과정에서 사용자 자격 증명(EX. username, password)을 확인하고 올바르면 인증 토큰을 반환
     @Bean
     // 인증 관리자 관련 설정
@@ -107,6 +106,7 @@ public class WebSecurityConfig {
 
            // 사용자 세부 정보를 제공하는 UserDetailsService Bean(을) 주입
             UserDetailsService userDetailsService,
+
             UserService userService
     ) throws Exception{
         // DaoAuthenticationProvider: DB(에서) 사용자 인증을 처리
@@ -114,8 +114,10 @@ public class WebSecurityConfig {
 
         // .setUserDetailsService: 사용자 세부 정보를 가져오는 서비스 설정
         authProvider.setUserDetailsService(userDetailsService);
+
         // 비밀번호 암호화를 사용
         authProvider.setPasswordEncoder(bCryptPasswordEncoder);
+
         // ProviderManager: DaoAuthenticationProvider 인증 처리
         return new ProviderManager(authProvider);
     }

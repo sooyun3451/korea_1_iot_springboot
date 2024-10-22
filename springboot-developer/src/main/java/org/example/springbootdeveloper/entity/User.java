@@ -31,16 +31,18 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt; // SQL(의) datetime(이) Java(의) Datetime(과) 호한
+    private LocalDateTime createdAt; // SQL(의) datetime(이) Java(의) Datetime(과) 호환
 
     @Column(name = "updated_at", nullable = true)
     private LocalDateTime updatedAt;
 
     @Builder
+    // @Builder(는) 클래스 위 or 생성자 위에 두는데 클래스 위는 전체 필드를 선택적으로
+    // 생성자 위는 생성자에 있는것만 받아서 좀 더 안정성이 있다.
     public User(String email, String password, LocalDateTime createdAt) {
         this.email = email;
         this.password = password;
@@ -50,7 +52,6 @@ public class User implements UserDetails {
     // cf) UserDetails 인터페이스
     // : 사용자의 인증 정보를 담고 있는 객체를 정의하는 인터페이스
     // : Spring Security(가) 사용자의 권한 및 인증 관련 정보를 확인할 떄 사용
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 사용자가 가지고 있는 권한(roles)목록을 반환
