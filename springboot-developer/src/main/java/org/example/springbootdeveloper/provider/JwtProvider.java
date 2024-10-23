@@ -1,16 +1,10 @@
 package org.example.springbootdeveloper.provider;
 
-/*
-    JwtProvider 클래스
-    : JWT 토큰을 생성하고 검증하는 역할
-    - HS256 암호화 알고리즘을 사용하여 JWT 서명
-    - 비밀키는 환경변수(jwt.secret)
-    - JWT 만료 기간은 10시간 지정 - 환경변후(36000000)
-*/
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,15 +12,31 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-@Component
+/*
+    JwtProvider 클래스
+    : JWT 토큰을 생성하고 검증하는 역할
+    - HS256 암호화 알고리즘을 사용하여 JWT 서명
+    - 비밀키는 Base64로 인코딩 지정 - 환경변수(jwt.secret)
+    - JWT 만료 기간은 10시간 지정 - 환경변수(jwt.expiration)
+*/
+
+@Component // 스프링 컨테이너에서 해당 클래스를 빈으로 관리하기 위해 사용
+// cf) @Bean: 메서드 레벨에서 선언, 반환되는 객체를 개발자가 수동으로 빈 등록
+//     @Component: 클래스 레벨에서 선언, 스프링 런타임 시 컴포넌트 스캔을 통해 자동으로 빈을 찾고 등록하는 어노테이션(의존성 주입)
 public class JwtProvider {
 
-    // 환경변수에 지정한 비밀키 값과 만료 시간을 가져옴
-    @Value("${jwt.secret}")
-    private String secretKey;
+    private final Key key; // JWT 서명에 사용할 암호화 키
+    private final int jwtExpirationMs; // JWT 토큰의 만료 시간을 저장
 
-    @Value("${jwt.expiration}")
-    private int jwtExpirationMs;
+    public JwtProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.jwtExpiration}") int jwtExpirationMs) {
+        // 생성자; JWTProvider 객체를 생성할 때 비밀키와 만료 시간을 초기와
+
+        // Base64로 인코딩된 비밀키를 디코딩하여 HMAC-SHA 알고리즘으로 암호화된 키 생성
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        
+        // 환경 변수에서 가져온 말료 시간을 변수에 저장
+        this.jwtExpirationMs = jwtExpirationMs;
+    }
 
     /*
     * JWT 생성 메서드
