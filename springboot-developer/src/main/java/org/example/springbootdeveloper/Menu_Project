@@ -1,0 +1,47 @@
+Menu_Project
+
+--- Entity ---
+Menu Class
+- 고유값: id(Long)
+- 메뉴명: name(String)
+- 메뉴 설명: description(String)
+- 메뉴 가격: price(int)
+- 이용가능여부: isAvailable(boolean)
+- 카테고리: category(String)
+- 크키: size(String)
+
+--- 기능정리 ---
+1. 메뉴 생성
+2. 메뉴 조회(단건)
+3. 메뉴 조회(전체)
+4. 메뉴 수정
+5. 메뉴 삭제
+
+--- 프로젝트 구조 ---
+MenuController
+MenuService
+MenuRepository
+
+Menu - Entity
+
+MenuRequestDto
+MenuResponseDto
++) ResponseDto (dto/response)
+
++) ApiMappingPattern(common/constant)
++) ResponseMessage(common/constant)
+
+-- DB 테이블 구조 ---
+use springboot_db;
+
+create table if not exists Menu(
+	id bigint auto_increment primary key, -- 메뉴 고유값
+    name varchar(255) not null, -- 메뉴명
+    description text not null, -- 메뉴설명
+    price int not null check(price >= 0), -- 메뉴 가격(0이상으로 설정)
+    isAvailable boolean not null default true, -- 메뉴 이용가능 여부 (기본값 true - 이용가능)
+    category varchar(100) not null, -- 메뉴카테고리
+    size varchar(50) default 'Regular', -- 메뉴 사이즈(기본값 Reqular - 보통)
+    constraint check_category check (category in ('Food', 'Drink', 'Dessert'))
+    -- 카테고리는 'Food', 'Drink', 'Dessert'로 제한
+);

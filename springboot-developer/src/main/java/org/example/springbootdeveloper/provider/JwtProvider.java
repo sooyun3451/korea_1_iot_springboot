@@ -30,7 +30,7 @@ public class JwtProvider {
     private final Key key; // JWT 서명에 사용할 암호화 키
     private final int jwtExpirationMs; // JWT 토큰의 만료 시간을 저장
 
-    public JwtProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.jwtExpiration}") int jwtExpirationMs) {
+    public JwtProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") int jwtExpirationMs) {
         // 생성자; JWTProvider 객체를 생성할 때 비밀키와 만료 시간을 초기와
 
         // Base64로 인코딩된 비밀키를 디코딩하여 HMAC-SHA 알고리즘으로 암호화된 키 생성
@@ -49,9 +49,9 @@ public class JwtProvider {
     * @param: 사용자 정보(User 객체)
     * @return: 생성된 JWT 토큰 문자열
     */
-    public String generateJwtToken(User user) {
+    public String generateJwtToken(String userId) {
         return Jwts.builder()
-                .claim("userId", user.getId()) // 클레임에 사용자 ID 저장(사용자의 고유 ID)
+                .claim("userId", userId) // 클레임에 사용자 ID 저장(사용자의 고유 ID)
                 .setIssuedAt(new Date()) // 현재 시간을 기준으로 토큰 발행 시간 설정
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs)) // 현재 시간에 만료 시간을 더해 토큰 만료시간 설정
                 .signWith(key, SignatureAlgorithm.HS256) // HMAC-SHA256 알고리즘으로 생성된 비밀키로 서명

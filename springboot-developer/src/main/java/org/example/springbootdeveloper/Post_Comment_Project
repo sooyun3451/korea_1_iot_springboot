@@ -29,27 +29,39 @@ Post_Comment_Project
 - 댓글 삭제(Delete)
 
 // 초기 환경 설정 //
+----- 가져올 파일 -----
 entity 폴더 내의 Post, Comment 파일
 dto 폴더 내의 response 폴더 내의 ResponseDto 파일
 springbootdeveloper 폴더 내의 Post_Comment_Project 파일
+
+----- 생성 파일 ------
 controller
 - PostController
 - CommentController
 
 dto
 - request
---- PostRequestDto
---- CommentRequestDto
-
-dto
+----- PostRequestDto
+----- CommentRequestDto
 - response
---- PostResponseDto
---- CommentResponseDto
+----- PostResponseDto
+----- CommentResponseDto
 
-Repository(Interface)
+repository (인터페이스 파일로 생성)
 - PostRepository
 - CommentRepository
 
-Service
+service
 - PostService
 - CommentService
+
+==== 1021  수업 추가 자료 =====
+PostService 파일 하단
+>> convertToPostResponseDto
+
+CommentService 파일 하단
+>> convertToCommentResponseDto
+
++) CommentResponseDto
+	, PostResponseDto
+파일 내 @AllArgsConstructor 추가
