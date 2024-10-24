@@ -24,13 +24,13 @@ public class MenuController {
     // MenuController mapping pattern 설정
     public static final String MENU_POST = "/";
 
-    public static final String MENU_GET_MENU_ID = "/{menuId}";
+    public static final String MENU_GET_MENU_ID = "/{id}";
     public static final String MENU_GET_LIST = "/list";
-     public static final String MENU_GET_CATEGORY= "/{menuCategory}";
+     public static final String MENU_GET_CATEGORY= "/search/category";
 
-    public static final String MENU_PUT = "/{menuId}";
+    public static final String MENU_PUT = "/{id}";
 
-    public static final String MENU_DELETE = "/{menuId}";
+    public static final String MENU_DELETE = "/{id}";
 
     @PostMapping(MENU_POST)
     public ResponseEntity<ResponseDto<MenuResponseDto>> createMenu(@Valid @RequestBody MenuRequestDto dto, @AuthenticationPrincipal String userEmail) {
@@ -65,8 +65,8 @@ public class MenuController {
     }
 
     @PutMapping(MENU_PUT)
-    public ResponseEntity<ResponseDto<MenuResponseDto>> updateMenu(@PathVariable Long id, @Valid @RequestBody MenuRequestDto dto) {
-        ResponseDto<MenuResponseDto> result = menuService.updateMenu(id, dto);
+    public ResponseEntity<ResponseDto<MenuResponseDto>> updateMenu(@PathVariable Long id,  @AuthenticationPrincipal String userEmail, @Valid @RequestBody MenuRequestDto dto) {
+        ResponseDto<MenuResponseDto> result = menuService.updateMenu(id, userEmail, dto);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

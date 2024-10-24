@@ -78,9 +78,9 @@ public class MenuService {
 
            // Optional.isPresent(): Optional 안에 값이 존재하는지 확인
            if(menuOptional.isPresent()) {
-               return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_DATA);
-           }else {
                data = new MenuResponseDto(menuOptional.get());
+           }else {
+               return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_DATA);
            }
 
         } catch(Exception e) {
@@ -99,12 +99,12 @@ public class MenuService {
            Optional<List<Menu>> optionalMenus = menuRepository.findByCategory(menuCategory);
 
            if(optionalMenus.isPresent()) {
-               return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_DATA);
-           }else {
                List<Menu> menus = optionalMenus.get();
                data = menus.stream()
                        .map((menu) -> new MenuResponseDto(menu))
                        .collect(Collectors.toList());
+           }else {
+               return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_DATA);
            }
 
         } catch(Exception e) {
@@ -115,15 +115,17 @@ public class MenuService {
         return ResponseDto.setSuccess(ResponseMessage.SUCCESS, data);
     }
 
-    public ResponseDto<MenuResponseDto> updateMenu(Long id, MenuRequestDto dto) {
+    public ResponseDto<MenuResponseDto> updateMenu(Long id, String userEmail, MenuRequestDto dto) {
         MenuResponseDto data = null;
         Long menuId = id;
+        String email = userEmail;
 
         try {
             Optional<Menu> menuOptional = menuRepository.findById(menuId);
 
             if(menuOptional.isPresent()) {
                 Menu menu = Menu.builder()
+                        .userEmail(email)
                         .name(dto.getName())
                         .description(dto.getDescription())
                         .price(dto.getPrice())
