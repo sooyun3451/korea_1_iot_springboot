@@ -105,8 +105,9 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 // 특정 경로에 대한 엑세스 설정
                                 // .requestMatchers(): 특정 요청과 일치하는 url(에) 대한 엑세스
-                                new AntPathRequestMatcher("/api/auth/**"),
+                                new AntPathRequestMatcher("/api/v1/auth/**"),
                                 new AntPathRequestMatcher("/api/users/**"),
+                                new AntPathRequestMatcher("/api/v1/menus/**"),
                                 new AntPathRequestMatcher("/user")
                         )
                         // .permitAll(): 누구나 접근이 가능하게 설정, 해당 경로와 일치하는 요청이 오면 인증, 인가 없이도 접근 가능

@@ -27,10 +27,17 @@ public class AuthService {
     public ResponseDto<UserSignUpResponseDto> signup(UserSignUpRequestDto userRequestDto) {
         String email = userRequestDto.getEmail();
         String password = userRequestDto.getPassword();
+        String confirmPassword = userRequestDto.getConfirmPassword();
+
         UserSignUpResponseDto data = null;
         User user = null;
 
         try {
+            // 패스워드 일치 여부 확인
+            if(!password.equals(confirmPassword)) {
+                return ResponseDto.setFailed(ResponseMessage.NOT_MATCH_PASSWORD);
+            }
+
             // 중복되는 이메일 검증
             if (userRepository.existsByEmail(email))
                 return ResponseDto.setFailed(ResponseMessage.EXIST_DATA);
