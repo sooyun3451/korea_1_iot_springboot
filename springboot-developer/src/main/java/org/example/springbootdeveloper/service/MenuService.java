@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.awt.SystemColor.menu;
-
 @Service
 @RequiredArgsConstructor
 public class MenuService {
@@ -22,7 +20,6 @@ public class MenuService {
     private final MenuRepository menuRepository;
 
     public ResponseDto<MenuResponseDto> createMenu(MenuRequestDto dto, String userEmail) {
-
         MenuResponseDto data = null;
 
         try {
@@ -35,11 +32,12 @@ public class MenuService {
                     .category(dto.getCategory())
                     .size(dto.getSize())
                     .build();
+
             menuRepository.save(menu);
 
             data = new MenuResponseDto(menu);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
         }
@@ -54,10 +52,11 @@ public class MenuService {
             List<Menu> menus = menuRepository.findAll();
 
             data = menus.stream()
-                    .map((menu) -> new MenuResponseDto(menu))
+                    // .map((menu) -> new MenuResponseDto(menu))
+                    .map(MenuResponseDto::new)
                     .collect(Collectors.toList());
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
         }
@@ -71,47 +70,48 @@ public class MenuService {
         Long menuId = id;
 
         try {
-            // Optional: <T> 제네릭 타입의 구조를 선택적으로 받아오는 클래스
-            // 데이터가 있을 수도 있고 없을 수도 있는 경우 사용
-            // - 해당하는 데이터가 있을 경우 Optional 안에 데이터 객체를 담고(찾을 땐 .get() 사용), 없을 경우에는 Optional.empty()를 반환
-           Optional<Menu> menuOptional = menuRepository.findById(menuId);
+            // Optional
+            // : <T> 제네릭 타입의 구조를 선택적으로 받아오는 클래스
+            // : 데이터가 있을 수도 있고 없을 수도 있는 경우 사용
+            // - 해당하는 데이터가 있을 경우 Optional 안에 데이터 객체를 담고 (찾을 땐 .get() 사용) 없을 경우에는 Optional.empty()를 반환
+            Optional<Menu> menuOptional = menuRepository.findById(menuId);
 
-           // Optional.isPresent(): Optional 안에 값이 존재하는지 확인
-           if(menuOptional.isPresent()) {
-               data = new MenuResponseDto(menuOptional.get());
-           }else {
-               return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_DATA);
-           }
+            // 옵셔널.isPresent(): Optional 안에 값이 존재하는지 확인
+            if (menuOptional.isPresent()) {
+                data = new MenuResponseDto(menuOptional.get());
+            } else {
+                return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_DATA);
+            }
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
         }
-
         return ResponseDto.setSuccess(ResponseMessage.SUCCESS, data);
     }
 
     public ResponseDto<List<MenuResponseDto>> getMenuByCategory(String category) {
-        String menuCategory = category;
         List<MenuResponseDto> data = null;
+        String menuCategory = category;
 
-        try {
-           Optional<List<Menu>> optionalMenus = menuRepository.findByCategory(menuCategory);
+        try  {
+            Optional<List<Menu>> optionalMenus = menuRepository.findByCategory(menuCategory);
 
-           if(optionalMenus.isPresent()) {
-               List<Menu> menus = optionalMenus.get();
-               data = menus.stream()
-                       .map((menu) -> new MenuResponseDto(menu))
-                       .collect(Collectors.toList());
-           }else {
-               return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_DATA);
-           }
+            if (optionalMenus.isPresent()) {
+                List<Menu> menus = optionalMenus.get();
 
-        } catch(Exception e) {
+                data = menus.stream()
+//                        .map((menu) -> new MenuResponseDto(menu))
+                        .map(MenuResponseDto::new )
+                        .collect(Collectors.toList());
+            } else {
+                return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_DATA);
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
         }
-
         return ResponseDto.setSuccess(ResponseMessage.SUCCESS, data);
     }
 
@@ -123,16 +123,15 @@ public class MenuService {
         try {
             Optional<Menu> menuOptional = menuRepository.findById(menuId);
 
-            if(menuOptional.isPresent()) {
-                Menu menu = Menu.builder()
-                        .userEmail(email)
-                        .name(dto.getName())
-                        .description(dto.getDescription())
-                        .price(dto.getPrice())
-                        .isAvailable(dto.isAvailable())
-                        .category(dto.getCategory())
-                        .size(dto.getSize())
-                        .build();
+            if (menuOptional.isPresent()) {
+                Menu menu = menuOptional.get();
+                menu.setUserEmail(email);
+                menu.setName(dto.getName());
+                menu.setDescription(dto.getDescription());
+                menu.setPrice(dto.getPrice());
+                menu.setAvailable(dto.isAvailable());
+                menu.setCategory(dto.getCategory());
+                menu.setSize(dto.getSize());
 
                 menuRepository.save(menu);
                 data = new MenuResponseDto(menu);
@@ -141,11 +140,10 @@ public class MenuService {
                 ResponseDto.setFailed(ResponseMessage.NOT_EXIST_DATA);
             }
 
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
+            ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
         }
-
         return ResponseDto.setSuccess(ResponseMessage.SUCCESS, data);
     }
 
@@ -153,18 +151,14 @@ public class MenuService {
         Long menuId = id;
 
         try {
-            if(!menuRepository.existsById(menuId)) {
+            if (!menuRepository.existsById(menuId)) {
                 return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_MENU);
             }
-
             menuRepository.deleteById(menuId);
             return ResponseDto.setSuccess(ResponseMessage.SUCCESS, null);
-
         } catch(Exception e) {
             e.printStackTrace();
             return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
         }
     }
-
-
 }
