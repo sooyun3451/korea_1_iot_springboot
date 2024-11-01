@@ -9,4 +9,5 @@ import org.example.springbootdeveloper.entity.User;
 public class UserSignInResponseDto {
     private String token;
     private User user;
+    private int exprTime;
 }

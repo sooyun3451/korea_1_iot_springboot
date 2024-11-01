@@ -54,8 +54,8 @@ public class MenuController {
 
     @GetMapping(MENU_GET_MENU_ID)
     public ResponseEntity<ResponseDto<MenuResponseDto>> getMenuById(@PathVariable Long id) {
-        ResponseDto<MenuResponseDto> retsult = menuService.getMenuById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(retsult);
+        ResponseDto<MenuResponseDto> result = menuService.getMenuById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping(MENU_GET_CATEGORY)
