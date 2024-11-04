@@ -52,5 +52,44 @@ public class w_스프링시큐리티_보충 {
             BCrypt 사용: 단방향 암호화 알고리즘인 BCrypt(를) 사용
             보안 강화: 암호화된 비밀번호는 복호화할 수 없으므로 보안성이 높음
             Bean 등록: Spring(에서) 관리하는 Bean(으로) 등록되어 필요 시 자동으로 주입
+
+    ===== JwtProvider 클래스 =====
+        1. generateJwtToken 메서드
+            사용자 ID를 포함하는 JWT(를) 생성하여 반환
+            현재 시간과 만료 시간 설정 및 HMAC-SHA256 서명 포함
+            사용자 인증에 활용되는 토큰
+
+        2. generateEmailValidToken 메서드
+            이메일 검증용으로 5분 동안 유효한 짧은 JWT(를) 생성
+            사용자 이름을 클레임으로 저장하며, 짧은 만료 시간으로 설정
+            이메일 인증 기능에 사용
+
+        3. removeBearer 메서드
+            Bearer 접두사를 제거하여 JWT(만) 반환
+            Authorization 헤더로부터 Bearer(를) 제거하는 데 사용
+
+        4. getUserIdFromJwt 메서드
+            JWT(에서) 사용자 ID 클레임을 추출해 반환
+            인증된 사용자를 특정하기 위한 정보로 사용
+
+        5. isValidToken 메서드
+            토큰의 유효성을 검사하여 true 또는 false(를) 반환
+            만료 여부와 올바른 형식인지 검증하는 역할 담당
+
+        6. getClaims 메서드
+            토큰의 클레임 정보를 추출하여 반환
+            JWT 본문에서 사용자 정보와 같은 세부 정보를 읽어옴
+
+    ===== JwtAuthenticationFilter 클래스 =====
+        1. doFilterInternal 메서드
+            Authorization 헤더에서 JWT 토큰을 추출하여 검증
+            유효하지 않은 토큰은 필터 체인 다음 단계로 넘김
+            유효한 토큰일 경우 userId를 추출하여 인증 설정 메서드로 전달
+
+        2. setAuthenticationContext 메서드(인증 설정 메서드)
+            userId를 포함한 인증 토큰을 생성
+            요청에 대한 세부 정보를 인증 토큰에 설정
+            SecurityContextHolder(에) 사용자 인증 정보를 설정
+            , 이후의 요청에서 인증된 사용자로 인식되도록 함
     */
 }
