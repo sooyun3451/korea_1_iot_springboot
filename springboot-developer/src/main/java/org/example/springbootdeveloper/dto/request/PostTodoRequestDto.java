@@ -10,5 +10,8 @@ public class PostTodoRequestDto {
     @NotNull
     private String task;
     @NotNull
+    private String category;
+    private String description;
+    @NotNull
     private Boolean status;
 }

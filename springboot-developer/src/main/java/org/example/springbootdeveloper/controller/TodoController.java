@@ -18,20 +18,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TodoController {
 
-    public static final String TODO_GET_LIST = "";
-    public static final String TODO_POST = "";
     public static final String TODO_UPDATE = "/{id}";
     public static final String TODO_DELETE = "/{id}";
 
     private final TodoService todoService;
 
-    @GetMapping(TODO_GET_LIST)
+    @GetMapping()
     public ResponseEntity<ResponseDto<List<GetTodoListResponseDto>>> getTodos() {
         ResponseDto<List<GetTodoListResponseDto>> result = todoService.getTodos();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @PostMapping(TODO_POST)
+    @PostMapping()
     public ResponseEntity<ResponseDto<PostTodoResponseDto>> createTodo(@Valid @RequestBody PostTodoRequestDto dto) {
         ResponseDto<PostTodoResponseDto> result = todoService.createTodo(dto);
         return ResponseEntity.status(HttpStatus.OK).body(result);

@@ -9,11 +9,15 @@ import org.example.springbootdeveloper.entity.Todo;
 public class GetTodoListResponseDto {
     private Long id;
     private String task;
+    private String category;
+    private String description;
     private Boolean status;
 
     public GetTodoListResponseDto(Todo todo) {
         this.id = todo.getId();
         this.task = todo.getTask();
+        this.category = todo.getCategory();
+        this.description = todo.getDescription();
         this.status = todo.getStatus();
     }
 }

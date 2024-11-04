@@ -31,34 +31,43 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 /*
  * WebSecurityConfig 클래스
- * : Spring Security를 통해 웹 애플리케이션의 보안을 구성(설정)
+ * : Spring Security(를) 통해 웹 애플리케이션의 보안을 구성(보안 홪경설정)
  * - JWT 필터를 적용하여 인증을 처리, CORS 및 CSRF 설정을 비활성화
  *   > 서버 간의 통신을 원활하게 처리
  * */
-@Configuration // 해당 클래스가 Spring의 설정 클래스로 사용됨을 명시
-@EnableWebSecurity // Spring Security의 웹 보안을 활성화
-@RequiredArgsConstructor // final 필드 | @NonNull 필드에 대해 생성자를 자동 생성
+@Configuration
+// 해당 클래스가 Spring(의) 설정 클래스로 사용됨을 명시
+// : Spring(이) 관리하는 객체를 생성하는데 사용
+
+@EnableWebSecurity
+// Spring Security(의) 웹 보안을 활성화
+// : WebSecurityConfig 클래스의 설정 사항을 사용할 수 있도록 "활성화"
+
+@RequiredArgsConstructor
+// final 필드 | @NonNull 필드에 대해 생성자를 자동 생성
 public class WebSecurityConfig {
 
-    @Lazy // 지연 로딩: 의존성 주입 시점이 필터가 사용될 때 로드됨
+    @Lazy
+    // 지연 로딩: 의존성 주입 시점이 필터가 사용될 때 로드됨
     @Autowired
     /*
-     * 요청이 들어올 때 JWT 토큰을 검증하는 필터
+     * JwtAuthenticationFilter(JWT 인증 필터)
+     * 요청이 들어올 때 "JWT 토큰을 검증하는 필터" - 검증하여 사용자를 인증
      * : UsernamePasswordAuthenticationFilter 이전에 동작, JWT 토큰이 유효한지 검사하여 사용자를 인증
-     * */
+     */
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /*
-     * CORS 정책
+     * CORS 필터 정책
      * : Cross Origin Resource Sharing
      * - 브라우저에서 다른 도메인(서버)으로부터 리소스를 요청할 때 발생하는 보안 정책
-     * - REST API를 사용할 때 다른 출처(도메인)에서 API에 접근할 수 있도록 허용하는 정책
+     * - REST API(를) 사용할 때 다른 출처(도메인)에서 API(에) 접근할 수 있도록 허용하는 정책
      *
      * CorsFilter 메서드
      * : 특정 출처에서 온 HTTP 요청을 허용하거나 거부할 수 있는 필터
      * : CORS 관련 설정을 필터링 해주는 역할
      * */
-    @Bean // 해당 메서드에서 생성한 객체는 Spring에 의해 관리되는 Bean으로 등록
+    @Bean // 해당 메서드에서 생성한 객체는 Spring(에) 의해 관리되는 Bean(으로) 등록
     public CorsFilter corsFilter() {
         // 1. UrlBasedCorsConfigurationSource
         // : CORS 정책을 URL 기반으로 "관리하는 객체"
@@ -70,7 +79,7 @@ public class WebSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true); // 쿠키를 허용할지 여부 - 자격 증명을 포함한 요청 허용 여부
-        config.addAllowedOriginPattern("*"); // 모든 도메인(출처) 허용 - 어디서든지 요청 가능
+        config.addAllowedOriginPattern("*"); // 모든 도메인(출처) 허용 - 어디서든지 요청 가능*
         config.addAllowedHeader("*"); // 모든 헤더 허용
         config.addAllowedMethod("*"); // 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
 
@@ -86,6 +95,7 @@ public class WebSecurityConfig {
      * - CSRF 보호를 비활성화, CORS 정책을 활성화
      *
      * cf) CSRF(Cross-Site Request Forgery) 공격: 사용자 대신 웹 애플리케이션에서 악의적인 행동을 하는 공격
+     *      - 비동기 통신을 하는 REST API(의) 경우 사용자가 의도치 않게 악의적인 요청을 보내는 CSRF 공격 보호를 비활성화
      *     CORS(Cross-Origin Resource Sharing) 정책: 서로 다른 서버 간의 리소스 상호작용을 위한 정책
      *
      * - JWT 필터를 추가하여 인증 요청을 처리
@@ -98,7 +108,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                // CSRF 보호 비활성화 (REST API에서는 보통 비활성화)
+                // CSRF 보호 비활성화 (REST API 에서는 보통 비활성화)
                 .csrf(AbstractHttpConfigurer::disable)
                 // CORS 정책 활성화
                 .cors(withDefaults())
@@ -108,7 +118,7 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 // 특정 경로에 대한 엑세스 설정
                                 // .requestMatchers()
-                                //  : 특정 요청과 일치하는 url에 대한 엑세스
+                                //  : 특정 요청과 일치하는 url(에) 대한 엑세스
                                 new AntPathRequestMatcher("/api/v1/auth/**"),
                                 new AntPathRequestMatcher("/api/v1/menus/**"),
                                 new AntPathRequestMatcher("/api/v1/books/**"),
@@ -132,24 +142,26 @@ public class WebSecurityConfig {
     }
 
     /*
-     * AuthenticationManager: Spring Security에서 사용자 인증을 처리한느 핵심 인터페이스
+     * AuthenticationManager: Spring Security(에서) 사용자 인증을 처리하는 핵심 인터페이스
      * - 인증 과정에서 사용자 자격 증명(EX. username, password)을 확인하고 올바르면 인증 토큰을 반환
      *
-     * - DaoAuthenticationProvider를 사용해 데이터베이스에서 사용자 인증을 처리
-     *       , BCryptPasswordEncoder를 사용하여 비밀번호를 암호화하여 검증
+     * - DaoAuthenticationProvider(를) 사용해 데이터베이스에서 사용자 인증을 처리
+     *       , BCryptPasswordEncoder(를) 사용하여 비밀번호를 암호화하여 검증
      * */
 
     @Bean
     // 인증 관리자 관련 설정
+    // : 사용자가 입력한 자격 증명(아이디, 비밀번호)이 올바른지 확인
     public AuthenticationManager authenticationManager(BCryptPasswordEncoder bCryptpasswordEncoder) throws Exception {
         // DaoAuthenticationProvider
-        // : DB에서 사용자 인증을 처리
+        // : DB(에서) 사용자 인증을 처리
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         // 비밀번호 검증을 위한 bCryptpasswordEncoder 사용
         authProvider.setPasswordEncoder(bCryptpasswordEncoder);
 
-        // ProviderManager를 반환: DaoAuthenticationProvider를 사용하여 인증 처리
+        // ProviderManager(를) 반환: DaoAuthenticationProvider(를) 사용하여 인증 처리
+        // - 다중 인증 Provider 관리자를 반환(사용자 인증 처리 관리지를 관리)
         return new ProviderManager(List.of(authProvider));
     }
 

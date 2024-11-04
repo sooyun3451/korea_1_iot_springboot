@@ -6,31 +6,31 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.example.springbootdeveloper.entity.User;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-/**
- * JwtProvider 클래스
- * : JWT 토큰을 생성하고 검증하는 역할
+/* JwtProvider 클래스
+ * : JWT(JSON Web Token) 토큰을 생성하고 검증하는 역할
+ * cf) JWT
+ *  : 사용자 정보를 암호화된 토큰으로 저장, 서버에 매번 요청할 때 전달 가능
+ *  : 주로 로그인 인증에 사용
  * - HS256 암호화 알고리즘을 사용하여 JWT 서명
  * - 비밀키는 Base64로 인코딩 지정 - 환경변수(jwt.secret)
  * - JWT 만료 기간은 10시간 지정 - 환경변수(jwt.expiration)
  */
-
-@Component // 스프링 컨테이너에서 해당 클래스를 빈으로 관리하기 위해 사용
+@Component
+// 스프링 컨테이너에서 해당 클래스를 빈으로 관리하기 위해 사용
 
 // cf) @Bean: 메서드 레벨에서 선언, 반환되는 객체를 개발자가 수동으로 빈 등록
-//     @Component: 클래스 레벨에서 선언, 스프링 런타임 시 컴포넌트 스캔을 통해
-//                  자동으로 빈을 찾고 등록하는 애너테이션 (의존성 주입)
+//     @Component: 클래스 레벨에서 선언, 스프링 런타임 시 컴포넌트 스캔을 통해 자동으로 빈을 찾고 등록하는 애너테이션 (의존성 주입 - 디스패쳐 서블릿이 해준다.)
 public class JwtProvider {
 
     // 환경 변수에 지정한 비밀키 값과 만료 시간을 가져옴
-    private final Key key; // JWT 서명에 사용할 암호화 키
+    private final Key key; // JWT 서명에 사용할 암호화 키를 저장할 변수
 
     @Value("${jwt.expiration}")
     private int jwtExpirationMs; // JWT 토큰의 만료 시간을 저장
@@ -87,10 +87,10 @@ public class JwtProvider {
     }
 
     /*
-     * JWT에서 Bearer 접두사 제거
+     * JWT(에서) Bearer 접두사 제거
      *
      * @param bearerToken - 접두사가 포함된 JWT 문자열
-     * @return Bearer이 제거된 JWT
+     * @return Bearer(이) 제거된 JWT
      *
      * cf) Bearer: 소유자
      *       - 해당 토큰의 소유자에게 권한을 부여하다.
@@ -109,7 +109,7 @@ public class JwtProvider {
      * @return 사용자 ID - 클레임에서 추출된 값
      * */
     public String getUserIdFromJwt(String token) {
-        // JWT에서 클레임 정보를 추출 - claim 객체에 저장
+        // JWT(에서) 클레임 정보를 추출 - claim 객체에 저장
         Claims claims = getClaims(token);
 
         // 클레임에서 userId 값을 문자열 형태로 반환

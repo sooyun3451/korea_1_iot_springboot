@@ -20,6 +20,12 @@ public class Todo {
     @NotBlank
     private String task;
 
+    @Column(nullable = false, length = 100)
+    private String category;
+
+    @Column(length = 500)
+    private String description;
+
     @Column(nullable = false)
     private Boolean status;
 
