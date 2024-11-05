@@ -2,16 +2,21 @@ package org.example.springbootdeveloper.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.springbootdeveloper.common.constant.ApiMappingPattern;
+import org.example.springbootdeveloper.common.constant.ResponseMessage;
 import org.example.springbootdeveloper.dto.request.PostRequestDto;
+import org.example.springbootdeveloper.dto.response.GetUserResponseDto;
 import org.example.springbootdeveloper.dto.response.PagedResponseDto;
 import org.example.springbootdeveloper.dto.response.PostResponseDto;
 import org.example.springbootdeveloper.dto.response.ResponseDto;
 import org.example.springbootdeveloper.service.PostService;
+import org.example.springbootdeveloper.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -20,6 +25,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final UserService userService;
 
     // CRUD 기능 명시
     // 1. 게시물 생성
@@ -35,7 +41,7 @@ public class PostController {
     // }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<PagedResponseDto<PostResponseDto>>> getPosts(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<ResponseDto<PagedResponseDto<PostResponseDto>>> getPosts(@RequestParam int page, @RequestParam int size, AuthenticationPrincipal ) {
             // @RequestParam: url(을) 통해 key(와) value 형태로 요청값을 보냄
             // page: 현재 페이지 번호, size: 페이지 당 표시할 데이터 개수
         try {
@@ -46,7 +52,6 @@ public class PostController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-
     }
 
     // 3. 게시글 단건 조회
