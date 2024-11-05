@@ -1,12 +1,17 @@
 package org.example.springbootdeveloper.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.springbootdeveloper.common.constant.ResponseMessage;
 import org.example.springbootdeveloper.dto.request.PostRequestDto;
 import org.example.springbootdeveloper.dto.response.CommentResponseDto;
+import org.example.springbootdeveloper.dto.response.PagedResponseDto;
 import org.example.springbootdeveloper.dto.response.PostResponseDto;
 import org.example.springbootdeveloper.dto.response.ResponseDto;
 import org.example.springbootdeveloper.entity.Post;
 import org.example.springbootdeveloper.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,49 +21,57 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
-    private final PostRepository postRepository;
+    @Autowired
+    private PostRepository postRepository;
 
-    // 1. 게시물 생성
-    public ResponseDto<PostResponseDto> createPost(PostRequestDto postRequestDto) {
+    public ResponseDto<PostResponseDto> createPost(PostRequestDto dto) {
         try {
             Post post = Post.builder()
-                    .title(postRequestDto.getTitle())
-                    .content(postRequestDto.getContent())
-                    .author(postRequestDto.getAuthor())
+                    .title(dto.getTitle())
+                    .content(dto.getContent())
+                    .author(dto.getAuthor())
                     .build();
-
-            Post savePost = postRepository.save(post);
-
-                // PostResponseDto postResponseDto = new PostResponseDto(
-                // savePost.getId(),
-                // savePost.getTitle(),
-                // savePost.getContent(),
-                // savePost.getAuthor(),
-                // new ArrayList<>()
-                // );
-
-            PostResponseDto postResponseDto = PostResponseDto.builder()
-                    .id(savePost.getId())
-                    .title(savePost.getTitle())
-                    .content(savePost.getContent())
-                    .author(savePost.getAuthor())
-                    .build();
-
-            return ResponseDto.setSuccess("success", postResponseDto);
+            postRepository.save(post);
+            return ResponseDto.setSuccess(ResponseMessage.SUCCESS, convertToPostResponseDto(post));
         } catch (Exception e) {
-            return ResponseDto.setFailed(e.getMessage());
+            return ResponseDto.setFailed("게시글 등록 중 오류가 발생했습니다: " + e.getMessage());
         }
+
     }
 
-    // 2. 모든 게시물 찾기
     public ResponseDto<List<PostResponseDto>> getAllPosts() {
         try {
-            return ResponseDto.setSuccess("success", postRepository.findAll().stream()
-                    .map(this::convertResponseDto)
-                    .collect(Collectors.toList()));
+            List<Post> posts = postRepository.findAll();
+            List<PostResponseDto> postResponseDtos = posts.stream()
+                    .map(this::convertToPostResponseDto)
+                    .collect(Collectors.toList());
+
+            if (postResponseDtos.isEmpty()) {
+                return ResponseDto.setFailed(ResponseMessage.NOT_EXIST_POST);
+            }
+
+            return ResponseDto.setSuccess(ResponseMessage.SUCCESS, postResponseDtos);
         } catch (Exception e) {
-            return ResponseDto.setFailed(e.getMessage());
+            return ResponseDto.setFailed(ResponseMessage.DATABASE_ERROR);
         }
+
+    }
+
+    public ResponseDto<PagedResponseDto<PostResponseDto>> getPosts(int page, int size) {
+        Page<Post> postPage = postRepository.findAll(PageRequest.of(page, size));
+
+        List<PostResponseDto> postDtos = postPage.getContent().stream()
+                .map(PostResponseDto::new)
+                .collect(Collectors.toList());
+
+        PagedResponseDto<PostResponseDto> pagedResponse = new PagedResponseDto<>(
+                postDtos,
+                postPage.getNumber(),
+                postPage.getTotalPages(),
+                postPage.getTotalElements()
+        );
+
+        return ResponseDto.setSuccess("게시글 목록 조회 성공", pagedResponse);
     }
 
     // 3. 특정 ID 게시물 찾기
@@ -132,6 +145,16 @@ public class PostService {
                 post.getContent(),
                 post.getAuthor(),
                 commentResponseDtos
+        );
+    }
+
+    private PostResponseDto convertToPostResponseDto(Post post) {
+        List<CommentResponseDto> commentDtos = post.getComments().stream()
+                .map(comment -> new CommentResponseDto(comment.getId(), post.getId(), comment.getContent(), comment.getCommenter()))
+                .collect(Collectors.toList());
+
+        return new PostResponseDto(
+                post.getId(), post.getTitle(), post.getContent(), post.getAuthor(), commentDtos
         );
     }
 
