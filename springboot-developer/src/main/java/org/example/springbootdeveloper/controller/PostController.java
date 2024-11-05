@@ -1,5 +1,6 @@
 package org.example.springbootdeveloper.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.springbootdeveloper.common.constant.ApiMappingPattern;
 import org.example.springbootdeveloper.dto.request.PostRequestDto;
 import org.example.springbootdeveloper.dto.response.PagedResponseDto;
@@ -15,10 +16,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(ApiMappingPattern.POST)
+@RequiredArgsConstructor
 public class PostController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
 
     // CRUD 기능 명시
     // 1. 게시물 생성
@@ -28,18 +29,24 @@ public class PostController {
     }
 
     // 2. 게시글 전체 조회
-//    @GetMapping
-//    public ResponseDto<List<PostResponseDto>> getAllPosts() {
-//        return postService.getAllPosts();
-//    }
+    // @GetMapping
+    // public ResponseDto<List<PostResponseDto>> getAllPosts() {
+    //    return postService.getAllPosts();
+    // }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<PagedResponseDto<PostResponseDto>>> getPosts(
-            @RequestParam int page,
-            @RequestParam int size) {
-
+    public ResponseEntity<ResponseDto<PagedResponseDto<PostResponseDto>>> getPosts(@RequestParam int page, @RequestParam int size) {
+            // @RequestParam: url(을) 통해 key(와) value 형태로 요청값을 보냄
+            // page: 현재 페이지 번호, size: 페이지 당 표시할 데이터 개수
+        try {
+        // 요청한 페이지에 대한 데이터를 반환(응답)
         ResponseDto<PagedResponseDto<PostResponseDto>> result = postService.getPosts(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(result);
+        }catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+
     }
 
     // 3. 게시글 단건 조회
