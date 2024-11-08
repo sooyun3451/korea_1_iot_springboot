@@ -60,6 +60,7 @@ public class JwtProvider {
      * */
     public String generateJwtToken(String userId) {
         return Jwts.builder()
+                // AuthService(의) String token = jwtProvider.generateJwtToken(email); 매개변수와 .claim("", ) 이름 같게
                 .claim("userId", userId) // 클레임에 사용자 ID 저장 (사용자의 고유 ID)
                 .setIssuedAt(new Date()) // 현재 시간을 기준으로 토큰 발행 시간 설정
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
@@ -107,6 +108,7 @@ public class JwtProvider {
      *
      * @param token - JWT 토큰
      * @return 사용자 ID - 클레임에서 추출된 값
+     * generateJwtToken(에서) 정한 .claim("userId", userId)
      * */
     public String getUserIdFromJwt(String token) {
         // JWT(에서) 클레임 정보를 추출 - claim 객체에 저장
