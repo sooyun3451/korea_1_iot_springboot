@@ -57,7 +57,7 @@ public class JwtProvider {
      *
      * @param : 사용자 정보 (User 객체)
      * @return : 생성된 JWT 토큰 문자열
-     * */
+     */
     public String generateJwtToken(String userId) {
         return Jwts.builder()
                 // AuthService(의) String token = jwtProvider.generateJwtToken(email); 매개변수와 .claim("", ) 이름 같게
@@ -68,7 +68,7 @@ public class JwtProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 // HMAC-SHA256 알고리즘으로 생성된 비밀키로 서명
                 .compact();
-        // JWT를 최종적으로 직렬화하여 문자열로 반환
+                // JWT(를) 최종적으로 직렬화하여 문자열로 반환
     }
 
     /*
@@ -76,7 +76,7 @@ public class JwtProvider {
      *
      * @param username - 사용자이름
      * @return 이메일 검증을 위한 JWT 토큰
-     * */
+     */
     public String generateEmailValidToken(String username) {
         return Jwts.builder()
                 .claim("username", username)
@@ -95,7 +95,7 @@ public class JwtProvider {
      *
      * cf) Bearer: 소유자
      *       - 해당 토큰의 소유자에게 권한을 부여하다.
-     * */
+     */
     public String removeBearer(String bearerToken) {
         if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
             throw new RuntimeException("Invalid JWT token format");
@@ -109,7 +109,7 @@ public class JwtProvider {
      * @param token - JWT 토큰
      * @return 사용자 ID - 클레임에서 추출된 값
      * generateJwtToken(에서) 정한 .claim("userId", userId)
-     * */
+     */
     public String getUserIdFromJwt(String token) {
         // JWT(에서) 클레임 정보를 추출 - claim 객체에 저장
         Claims claims = getClaims(token);
@@ -122,7 +122,7 @@ public class JwtProvider {
      * JWT 유효성 검증
      * @param token - JWT 토큰
      * @return 유효하면 true, 그렇지 않으면 false
-     * */
+     */
     public boolean isValidToken(String token) {
         try {
             getClaims(token); // JWT 클레임을 가져오면서 유효성 검증
@@ -137,7 +137,7 @@ public class JwtProvider {
      *
      * @param token - JWT 토큰
      * @return 클레임 정보
-     * */
+     */
     public Claims getClaims(String token) {
         JwtParser jwtParser = Jwts.parserBuilder()
                 .setSigningKey(key) // JWT 파서에 서명에 사용된 비밀키 설정

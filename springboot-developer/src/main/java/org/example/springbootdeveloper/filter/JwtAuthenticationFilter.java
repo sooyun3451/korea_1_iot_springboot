@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // 토큰이 없거나 유효하지 않으면 필터 체인을 타고 다음 단계로 이동
             if(token == null || !jwtProvider.isValidToken(token)) {
-                // 토큰이 유효하지 않은 경우: 시쿠리티 설정 없이 로직이 실행
+                // 토큰이 유효하지 않은 경우: 시큐리티 설정 없이 로직이 실행
                 filterChain.doFilter(request, response);
                 // 이후의 필터를 거치지 않고 해당 메서드가 종료
                 return;
